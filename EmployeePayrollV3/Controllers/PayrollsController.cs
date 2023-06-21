@@ -2,8 +2,10 @@
 using EmployeePayrollV3.DTOs;
 using EmployeePayrollV3.Models.crudModel;
 using EmployeePayrollV3.Models.DBModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace EmployeePayrollV3.Controllers
 {
@@ -100,6 +102,8 @@ namespace EmployeePayrollV3.Controllers
 
         //updating Payroll details
         [HttpPut("updateDetail")]
+        [Authorize(Roles = "Admin")]
+
 
         public IActionResult UpdatePayroll(int id, PayrollDTO pays)
         {
@@ -151,6 +155,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Deleting Payroll details
         [HttpDelete("deleteDetails")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeletePayroll(int id)
         {
             var payrollToDelete = _dbContext.Payrolls.Find(id);

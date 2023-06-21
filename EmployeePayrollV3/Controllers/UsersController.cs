@@ -1,8 +1,10 @@
 ﻿using EmployeePayrollV3.Data;
 using EmployeePayrollV3.Models.crudModel;
 using EmployeePayrollV3.Models.DBModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -98,20 +100,12 @@ namespace EmployeePayrollV3.Controllers
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:Key"]));
             var credentials = new SigningCredentials(securityKey,SecurityAlgorithms.HmacSha256);
 
-
-            string roleName = "";
-            foreach(var role in  _dbContext.Roles)
-            {
-                if(currentUser.roleId == role.Id)
-                {
-                    roleName = role.roleType;
-                    break;
-                }
-            }
+            var role = _dbContext.Roles.Find(currentUser.roleId);
 
             var Claims = new[]
             {
-                new Claim(ClaimTypes.Email, user.EmailId)
+                new Claim(ClaimTypes.Email, user.EmailId),
+                new Claim(ClaimTypes.Role, role.roleType),
             };
 
             var token = new JwtSecurityToken(
@@ -180,6 +174,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Updating Employee Details
         [HttpPut("UpdateList")]
+        [Authorize(Roles ="Admin")]
         public IActionResult UpdateEmpDetail(int id, UserDetails user)
         {
             var empToUpdated = _dbContext.Users.FirstOrDefault(u => u.Id == id);
@@ -203,6 +198,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Deleting Employee Details
         [HttpDelete("DeleteList")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteEmpDetail(int id)
         {
             var empToDeleted = _dbContext.Users.Find(id);

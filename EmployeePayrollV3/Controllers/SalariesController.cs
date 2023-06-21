@@ -2,8 +2,10 @@
 using EmployeePayrollV3.DTOs;
 using EmployeePayrollV3.Models.crudModel;
 using EmployeePayrollV3.Models.DBModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace EmployeePayrollV3.Controllers
 {
@@ -131,6 +133,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Updating Salary details
         [HttpPut("UpdateSalary")]
+        [Authorize(Roles = "Admin")]
         public IActionResult UserUpdate(int id, SalaryDTO sal)
         {
             JobClass jobClass = _dbContext.JobClasses.FirstOrDefault(j => j.Id == sal.JobClassId);
@@ -166,6 +169,7 @@ namespace EmployeePayrollV3.Controllers
 
         //deleting Salary details
         [HttpDelete("DeleteSalaryDetail")]
+        [Authorize(Roles = "Admin")]
         public IActionResult SalaryDetailsDelete(int id)
         {
             var Salarydetailstodelete = _dbContext.Salaries.Find(id);

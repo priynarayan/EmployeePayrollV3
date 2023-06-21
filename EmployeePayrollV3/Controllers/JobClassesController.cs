@@ -1,6 +1,7 @@
 ﻿using EmployeePayrollV3.Data;
 using EmployeePayrollV3.Models.crudModel;
 using EmployeePayrollV3.Models.DBModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -86,6 +87,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Updating Job details by Admin
         [HttpPut("UpdateJobList")]
+        [Authorize (Roles = "Admin")]
         public IActionResult UpdateJobListByid(int id, JobDetails jobs)
         {
             var jobToUpdated = _dbContext.JobClasses.FirstOrDefault(j => j.Id == id);
@@ -108,6 +110,7 @@ namespace EmployeePayrollV3.Controllers
 
         //Deleting Job Details by id
         [HttpDelete("DeleteJobList")]
+        [Authorize(Roles = "Admin")]
         public IActionResult DeleteJobListById(int id)
         {
             var jobToDeleted = _dbContext.JobClasses.Find(id);
